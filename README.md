@@ -1,23 +1,51 @@
-# ESP32 WiFi Station Connection Example
+# Ejemplos de Conectividad para ESP32: Wi-Fi y Bluetooth Classic
 
-Este repositorio contiene un ejemplo básico e intuitivo para conectar un microcontrolador **ESP32** a una red Wi-Fi en modo estación (**WIFI_STA**).
+Este repositorio contiene dos proyectos/ejemplos básicos desarrollados para el microcontrolador **ESP32**, orientados a la gestión de comunicaciones inalámbricas:
 
-## 📌 Descripción
+1. **Conexión Wi-Fi en modo Estación (STA)**.
+2. **Control de perifericos y comunicación bidireccional mediante Bluetooth Classic (SPP)**.
 
-El código inicializa el módulo Wi-Fi del ESP32, se conecta a un punto de acceso (Access Point) utilizando las credenciales proporcionadas y muestra el estado de la conexión a través del Monitor Serie (UART). Una vez establecida la conexión con éxito, imprime la dirección IP asignada localmente.
+---
 
-## 🚀 Requisitos
+## 📌 Contenido del Repositorio
 
-- **Hardware:**
-  - Placa de desarrollo ESP32.
-  - Cable USB para programación y comunicación serie.
-- **Software / Entorno:**
-  - Arduino IDE (con el core de ESP32 instalado) o VS Code con PlatformIO.
+### 1. Conexión Wi-Fi (`Codigo_arduino_wifi.ino`)
+Establece la conexión del ESP32 a un punto de acceso (Access Point) utilizando las credenciales configuradas.
+- **Características:**
+  - Modo de trabajo `WIFI_STA` (Estación).
+  - Bucle de espera no bloqueante infinito hasta confirmar asociación a la red[cite: 3].
+  - Muestra del estado de la conexión e impresión de la dirección IP asignada a través del Monitor Serie[cite: 3].
 
-## ⚙️ Configuración
+### 2. Control por Bluetooth (`Codigo_arduino_BL.ino`)
+Configura el Bluetooth Classic en modo Serial Port Profile (SPP) para recibir comandos desde un dispositivo externo (como un celular o PC) y controlar un LED.
+- **Características:**
+  - Inicialización del servicio Bluetooth con el nombre de broadcast `"ESP32"`.
+  - Control de un LED conectado al puerto `GPIO2` (LED integrado en la mayoría de placas).
+  - **Lógica de recepción:** Si se recibe el carácter `'1'`, enciende el LED; con cualquier otro carácter (como `'0'`), lo apaga.
+  - **Puente bidireccional (Passthrough):** Redirecciona los datos recibidos por Bluetooth hacia el Monitor Serie y viceversa.
 
-Antes de subir el código a tu placa, actualiza las macros con las credenciales de tu red Wi-Fi:
+---
+
+## 🚀 Requisitos de Hardware y Software
+
+### Hardware
+- Placa de desarrollo **ESP32** (DevKit v1 o similar).
+- Cable USB a Micro-USB/USB-C para alimentación y programación.
+- Dispositivo móvil o PC con Bluetooth para enviar comandos serie (e.g., app *Serial Bluetooth Terminal* en Android).
+
+### Software
+- Arduino IDE (con el soporte para placas ESP32 instalado) o VS Code + PlatformIO.
+- Librerías incluidas en el core oficial de ESP32:
+  - `<WiFi.h>`[cite: 3]
+  - `<BluetoothSerial.h>`[cite: 4]
+
+---
+
+## ⚙️ Configuración y Uso
+
+### Configuración de Wi-Fi
+En el archivo de Wi-Fi, edita las credenciales antes de subir el programa[cite: 3]:
 
 ```cpp
-#define SSID "TU_NOMBRE_DE_RED"
+#define SSID "TU_RED_WIFI"
 #define PSWD "TU_CONTRASEÑA"
