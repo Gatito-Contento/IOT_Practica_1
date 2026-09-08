@@ -1,7 +1,7 @@
 #include <WiFi.h>
 
-#define SSID "Pixel"
-#define PSWD "pixelgenerico"
+#define SSID "CELULARHOSTPOT"
+#define PSWD "CELULARGENERICO"
 
 void InitWiFi();	// Se declara la función que inicializa el Wi-Fi del ESP32.
 
