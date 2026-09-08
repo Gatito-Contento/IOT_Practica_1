@@ -1,43 +1,34 @@
-#include <WiFi.h>
+#include <BluetoothSerial.h>
 
-#define SSID "Pixel"
-#define PSWD "pixelgenerico"
+int valor;
+BluetoothSerial SerialBT;
 
-void InitWiFi();	// Se declara la función que inicializa el Wi-Fi del ESP32.
+const int LED = 2;
 
 void setup() {
+  pinMode(LED, OUTPUT);
 
   Serial.begin(9600);
-  InitWiFi();		// Se llama la función del Wi-Fi
-
+  SerialBT.begin("ESP32");
 }
 
 void loop() {
-  // Está vacío ya que solo nos queremos conectar a una red Wi-Fi
-}
+  // Procesar datos provenientes del Bluetooth
+  while (SerialBT.available()) {
+    valor = SerialBT.read();
 
-void InitWiFi(){
-  WiFi.mode(WIFI_STA);                      // Estación: cuando nos vamos a conectar a una red. Se configura por defecto.
-  //WiFi.mode(WIFI_AP);                     // Punto de Acceso: cuando vamos a generar una red para que otros dispositivos se conecten.
-  //WiFi.mode(WIFI_MODE_APSTA);             // Ambos.
-  WiFi.begin(SSID, PASS);                   // Inicializamos el WiFi con nuestras credenciales.
-  Serial.print("Conectando a red ");
-  Serial.print(SSID);
+    if (valor == '1') {
+      digitalWrite(LED, HIGH);   // Enciende si llega un '1'
+    } else {
+      digitalWrite(LED, LOW);    // Apaga con cualquier otro carácter ('0', letras, etc.)
+    }
 
-  while(WiFi.status() != WL_CONNECTED){     // Se queda en este bucle hasta que el estado del WiFi sea diferente a desconectado.
-    Serial.print(".");
-    delay(100);
+    Serial.write(valor);         // Reenvía al Monitor Serial
   }
-  delay(50);
-  if(WiFi.status() == WL_CONNECTED){        // Si el estado del WiFi es conectado entra al If.
-    Serial.println("");
-    Serial.println("");
-    Serial.println("Conexión WiFi exitosa!!!");
-    Serial.println("");
-    delay(50);
-    Serial.print("Tu IP es: ");
-    Serial.println(WiFi.localIP());
-  }else{
-    Serial.println("¡Fallo en conexión a internet!");
+
+  // Procesar datos provenientes del Monitor Serial hacia el Bluetooth
+  while (Serial.available()) {
+    valor = Serial.read();
+    SerialBT.write(valor);
   }
 }
